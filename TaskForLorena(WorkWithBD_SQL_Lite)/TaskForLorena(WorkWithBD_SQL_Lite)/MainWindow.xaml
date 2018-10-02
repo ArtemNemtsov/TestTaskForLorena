@@ -8,7 +8,7 @@
                 <ContextMenu />
             </ComboBox.ContextMenu>
         </ComboBox>
-        <Label Content="Выберите город" Height="30" HorizontalAlignment="Left" Margin="12,37,0,0" Name="label1" VerticalAlignment="Top" Width="135" Foreground="#FF453636" Background="{x:Null}" FontSize="14"></Label>
+        <Label Content="Выбор" Height="30" HorizontalAlignment="Left" Margin="46,38,0,0" Name="label1" VerticalAlignment="Top" Width="70" Foreground="#FF453636" Background="{x:Null}" FontSize="14"></Label>
         <TextBox Height="35" HorizontalAlignment="Left" Margin="186,98,0,0" Name="textBox1" VerticalAlignment="Top" Width="127" Cursor="Hand" TextChanged="textBox1_TextChanged" FontSize="22" />
         <Label Background="{x:Null}" Content="Укажите цену (руб)" Foreground="#FF453636" Height="30" Margin="193,37,188,0" Name="label2" VerticalAlignment="Top" FontSize="12" />
         <Label Background="{x:Null}" Content="Результат:" Foreground="#FF453636" Height="30" HorizontalAlignment="Right" Margin="0,37,46,0" Name="label3" VerticalAlignment="Top" Width="93" FontSize="14" />

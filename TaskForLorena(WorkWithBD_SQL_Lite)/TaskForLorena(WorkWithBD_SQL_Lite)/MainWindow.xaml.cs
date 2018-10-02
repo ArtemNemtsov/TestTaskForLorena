@@ -11,23 +11,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SQLite;
+using System.IO;
 
 namespace TaskforLorena_work_with_DBSQLite_
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        readonly string connectDBPath = "";
+        readonly string BDFileName = "TestLorena.bd";
+        string fullPathToBD ;
+        string cwd = System.IO.Directory.GetCurrentDirectory();
+             
         public MainWindow()
         {
             InitializeComponent();
+            cwd += connectDBPath;
+            fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);
+            IBDStorage BDStorObj = new BDStorage(this.fullPathToBD);
+            //BDStorObj.;
             Сhoice.Items.Add("ywafw");
-            Сhoice.Items.Add("twafw");
-            Сhoice.Items.Add("rwafw");
-            Сhoice.Items.Add("ewafw");
-            Сhoice.Items.Add("wwafw");
-            Сhoice.Items.Add("qwafw");
 
         }
 
