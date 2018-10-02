@@ -10,17 +10,17 @@ namespace TaskforLorena_work_with_DBSQLite_
 {
     class BDStorage : IBDStorage
     {
-        private readonly SQLiteConnection dbConnection;
 
+        private readonly SQLiteConnection dbConnection;          //поле для хранения экземпляра dbConnection ,уже соединеного с нашей БД
 
         public BDStorage (string connectionPath)
         {
             dbConnection = CreateDBConnection(connectionPath); 
         }
 
-       public SQLiteConnection CreateDBConnection(string connectionPath)          // метод для соединения к БД
+       public SQLiteConnection CreateDBConnection(string connectionPath)       // метод для соединения к БД
        {
-            if (!(File.Exists(connectionPath)))                             // если файл не найден сообщаем об ошибке 
+            if (!(File.Exists(connectionPath)))                               // если файл не найден сообщаем об ошибке 
             {
                 MessageBox.Show("File not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;  // there is no db-file
@@ -29,5 +29,8 @@ namespace TaskforLorena_work_with_DBSQLite_
             dbConnection.Open();
             return dbConnection;
         }
+
+
+        SQLiteCommand command = new SQLiteCommand(select, dbConnection);
     }    
 }
