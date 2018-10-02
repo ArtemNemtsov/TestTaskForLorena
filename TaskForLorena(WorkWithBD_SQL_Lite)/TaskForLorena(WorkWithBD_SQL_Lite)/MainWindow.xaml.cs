@@ -19,7 +19,7 @@ namespace TaskforLorena_work_with_DBSQLite_
     public partial class MainWindow : Window
     {
         readonly string connectDBPath = "";
-        readonly string BDFileName = "TestLorena.bd";
+        readonly string BDFileName = "TestBDForLorena.db";
         string fullPathToBD ;
         string cwd = System.IO.Directory.GetCurrentDirectory();
              
@@ -28,7 +28,7 @@ namespace TaskforLorena_work_with_DBSQLite_
             InitializeComponent();
             cwd += connectDBPath;
             fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);
-            IBDStorage BDStorObj = new BDStorage(this.fullPathToBD);
+            IBDStorage BDStorObj = new BDStorage(fullPathToBD);
             //BDStorObj.;
             Сhoice.Items.Add("ywafw");
 
