@@ -14,8 +14,9 @@ namespace TaskforLorena_work_with_DBSQLite_
         private readonly SQLiteConnection dbConnection;          //поле для хранения экземпляра dbConnection ,уже соединеного с нашей БД
 
         public BDStorage (string connectionPath)
-        {
-            dbConnection = CreateDBConnection(connectionPath); 
+        {            
+            dbConnection = CreateDBConnection(connectionPath);
+            QueryStorage queryStorObj = new QueryStorage(dbConnection);   //создаем экзепляр класса QueryStorage  и передаем конструктору dbConnection
         }
 
        public SQLiteConnection CreateDBConnection(string connectionPath)       // метод для соединения к БД
