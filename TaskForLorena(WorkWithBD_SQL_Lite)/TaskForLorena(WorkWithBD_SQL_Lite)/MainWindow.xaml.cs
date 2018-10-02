@@ -28,7 +28,7 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             InitializeComponent();            
             cwd += connectDBPath;
-            fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);
+            fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
             IBDStorage BDStorObj = new BDStorage(fullPathToBD);
             //BDStorObj.;
             Сhoice.Items.Add("ywafw");

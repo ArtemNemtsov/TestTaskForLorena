@@ -31,6 +31,6 @@ namespace TaskforLorena_work_with_DBSQLite_
         }
 
 
-        SQLiteCommand command = new SQLiteCommand(select, dbConnection);
+     //   SQLiteCommand command = new SQLiteCommand(select, dbConnection);
     }    
 }

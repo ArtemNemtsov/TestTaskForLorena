@@ -7,7 +7,7 @@ namespace TaskForLorena_WorkWithBD_SQL_Lite_
 {
     public class QueryStorage
     {
-        public string createOurTable { get; } =
+        public string createOurTable   =
             "CREATE TABLE `TestTask` (" +
              "`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
              " `Parent_id`	INTEGER NOT NULL," +
@@ -16,9 +16,9 @@ namespace TaskForLorena_WorkWithBD_SQL_Lite_
             "`	REAL NOT NULL," +
             "	`Relation`	INTEGER NOT NULL," +
             "	`Description`	TEXT(124)" +
-            ");";
+            ");" ;
 
-        public string FillOurTabled { get} =
+        public string FillOurTabled  =
                "insert into TestTask" +
                 "values" +
                 "(1,0, \"Миасс\", 4,  0,  \"фабрика\")," +
