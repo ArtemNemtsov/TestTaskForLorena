@@ -20,8 +20,7 @@ namespace TaskforLorena_work_with_DBSQLite_
     {
         readonly string connectDBPath = "..\\..\\";
         readonly string BDFileName = "TestBDForLorena.db";
-        string fullPathToBD ;
-     
+        string fullPathToBD ;    
         string cwd = System.IO.Directory.GetCurrentDirectory();
              
         public MainWindow()
@@ -29,8 +28,11 @@ namespace TaskforLorena_work_with_DBSQLite_
             InitializeComponent();            
             cwd += connectDBPath;
             fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
-            IBDStorage BDStorObj = new BDStorage(fullPathToBD);
-            //BDStorObj.;
+            IBDStorage BDStorage = new BDStorage(fullPathToBD);
+            QueryStorage queryStorage = new QueryStorage();
+            if (!BDStorage.CreateNewTableBD(queryStorage.GetCreateTableQuery()))  MessageBox.Show("Ошибка создания таблицы");
+            if (!BDStorage.InsertValueBD(queryStorage.GetFillTableQuery()))       MessageBox.Show("Ошибка заполнения таблицы");
+            
             Сhoice.Items.Add("ywafw");
 
         }

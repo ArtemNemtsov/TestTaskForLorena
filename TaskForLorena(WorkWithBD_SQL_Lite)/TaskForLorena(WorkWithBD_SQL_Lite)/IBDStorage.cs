@@ -6,8 +6,12 @@ using System.Data.SQLite;
 
 namespace TaskforLorena_work_with_DBSQLite_
 {
-     interface IBDStorage
+     public interface IBDStorage
     {
-      SQLiteConnection CreateDBConnection(string connectionPath);
+         SQLiteConnection CreateDBConnection(string connectionPath);
+         bool CreateNewTableBD( string createTableSQL);
+         bool InsertValueBD(string FillTableSQL);
+         bool DeletedTableFromBD(string nameTable);
+         List<SalesOffice> GetFieldFromBD(string querySelectSQL);
     }
 }

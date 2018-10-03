@@ -8,14 +8,8 @@ namespace TaskforLorena_work_with_DBSQLite_
 {
     public class QueryStorage
     {
-        private readonly SQLiteConnection dbConnection;
 
-        public QueryStorage(SQLiteConnection dbConnection)
-        {
-            this.dbConnection = dbConnection;
-        }
-
-        private string createOurTable =
+        private string createTableSQL =
             "CREATE TABLE `TestTask` (" +
              "`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
              " `Parent_id`	INTEGER NOT NULL," +
@@ -26,20 +20,23 @@ namespace TaskforLorena_work_with_DBSQLite_
             "	`Description`	TEXT(124)" +
             ");";
 
-         private string FillOurTabled =
-               "insert into TestTask" +
-                "values" +
-                "(1,0, \"Миасс\", 4,  0,  \"фабрика\")," +
-                "(2,1, \"Амелия\",5,   1,    \"\")," +
-                "(3,2, \"Teст1\",      2,   1,	\"\" )," +
-                "(4,1, \"Тест2\",      0,   1, 	\"\" )," +
-                "(5,0, \"Курган\",   11,  0,    \"badEconomy\");";
-        
+        private string FillTableSQL  =
+              "insert into TestTask" +
+               "values" +
+               "(1,0, \"Миасс\", 4,  0,  \"фабрика\")," +
+               "(2,1, \"Амелия\",5,   1,    \"\")," +
+               "(3,2, \"Teст1\",      2,   1,	\"\" )," +
+               "(4,1, \"Тест2\",      0,   1, 	\"\" )," +
+               "(5,0, \"Курган\",   11,  0,    \"badEconomy\");" ;
 
-        public bool CreateTable(string createOurTable)
+        public string GetCreateTableQuery()
         {
+            return createTableSQL;
+        }
 
-            return true;
+        public string GetFillTableQuery()
+        {
+            return FillTableSQL;
         }
     }
 }
