@@ -6,12 +6,12 @@ using System.Data.SQLite;
 
 namespace TaskforLorena_work_with_DBSQLite_
 {
-     public interface IBDStorage
+    public interface IBDStorage
     {
-         SQLiteConnection CreateDBConnection(string connectionPath);
-         int CreateCellsOffice(string Name, float discount, bool dependence, string description, int IDparent);
-         bool ClearCellsOffice(string nameTable);
-         bool disbandOffices(string nameTable);
-         List<SalesOffice> GetFieldFromBD(string querySelectSQL);
+        SQLiteConnection CreateDBConnection(string connectionPath);
+        int CreateCellsOffice(string Name, float discount, bool dependence, string description, int IDparent);
+        bool ClearCellsOffice(string nameTable);
+        bool IsExistTableStatus(string NameTable);
+        List<SalesOffice> GetFieldFromBD(string querySelectSQL);
     }
 }

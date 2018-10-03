@@ -19,6 +19,19 @@ namespace TaskforLorena_work_with_DBSQLite_
             dbConnection = CreateDBConnection(connectionPath); //создаем экзепляр класса QueryStorage  и передаем конструктору dbConnection             
         }
 
+        public List<string> GetShops ()
+        {
+            List<string> shopList = new List<string>();
+            string SQL = "SELECT NAME FROM TestTask;";
+            command = new SQLiteCommand(SQL, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                shopList.Add((reader["name"]).ToString());
+            }
+            return shopList;
+        }
+
        public SQLiteConnection CreateDBConnection(string connectionPath)       // метод для соединения к БД
        {
             if (!(File.Exists(connectionPath)))                               // если файл не найден сообщаем об ошибке 
@@ -29,6 +42,27 @@ namespace TaskforLorena_work_with_DBSQLite_
             SQLiteConnection dbConnection = new SQLiteConnection("Data Source=" + connectionPath);
             dbConnection.Open();
             return dbConnection;
+        }
+
+        public bool IsExistTableStatus (string NameTable)
+        {
+            int count = 0;
+           string SQL = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = \"" + NameTable + "\"";
+            command = new SQLiteCommand(SQL, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                count = int.Parse(reader["Count(*)"].ToString());
+            }
+            if (count == 1)
+                return true;
+            return false;
+        }
+
+        public void LoadTabletoBD (string SQLCreateTableScript)
+        {
+            command = new SQLiteCommand(SQLCreateTableScript, dbConnection);
+            command.ExecuteNonQuery();
         }
 
         public int CreateCellsOffice(string Name, float discount, bool Relation, string description, int IdParent)
@@ -51,36 +85,12 @@ namespace TaskforLorena_work_with_DBSQLite_
                 currentID = Int32.Parse((reader["max(id)"]).ToString());
             return currentID;
        }
-        
-       public bool AddedShops(string FillTableSQL)
-       {
-           count = 0;
-           command = new SQLiteCommand(FillTableSQL, dbConnection);
-           count= command.ExecuteNonQuery();
-           if (count > 0)
-           {
-               return true;
-           }
-           return false;
-       }
 
        public bool ClearCellsOffice(string nameTable)
        {
            count = 0;
            string clearTable = "DELETE FROM " + nameTable;
            command = new SQLiteCommand(clearTable, dbConnection);
-           if (count > 0)
-           {
-               return true;
-           }
-           return false;
-       }
-
-       public bool disbandOffices(string nameTable)
-       {
-           count = 0;
-           string deleteTable = "DROP TABLE " + nameTable;
-           command = new SQLiteCommand(deleteTable, dbConnection);
            if (count > 0)
            {
                return true;
@@ -114,6 +124,15 @@ namespace TaskforLorena_work_with_DBSQLite_
            return ListFieldObj;
        }
 
-          
+        public string createTableSQL =
+          "CREATE TABLE `TestTask` (" +
+           "`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+           " `Parent_id`	INTEGER NOT NULL," +
+          "`Name`	TEXT NOT NULL," +
+          "`Discount" +
+          "`	REAL NOT NULL," +
+          "	`Relation`	INTEGER NOT NULL," +
+          "	`Description`	TEXT(124)" +
+          ");";
     }    
 }

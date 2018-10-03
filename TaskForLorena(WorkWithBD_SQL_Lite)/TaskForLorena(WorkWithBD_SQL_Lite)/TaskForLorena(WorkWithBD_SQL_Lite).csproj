@@ -62,7 +62,6 @@
     <Compile Include="IBDStorage.cs" />
     <Compile Include="IDepartment.cs" />
     <Compile Include="ISalesOffice.cs" />
-    <Compile Include="QueryStorage.cs" />
     <Compile Include="SalesOffice.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

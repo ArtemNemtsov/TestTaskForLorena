@@ -9,7 +9,7 @@ namespace TaskforLorena_work_with_DBSQLite_
     {
         int ID { get; }
         double Discount { get; set; }
-        
+        List<IDepartment> ChildDepartments { get; set; }
         bool DependsOnParent { get; set; }       
     }
 }
