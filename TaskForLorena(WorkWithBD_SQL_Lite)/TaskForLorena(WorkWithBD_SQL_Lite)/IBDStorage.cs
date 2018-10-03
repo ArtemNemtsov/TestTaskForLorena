@@ -9,9 +9,9 @@ namespace TaskforLorena_work_with_DBSQLite_
      public interface IBDStorage
     {
          SQLiteConnection CreateDBConnection(string connectionPath);
-         bool CreateNewTableBD( string createTableSQL);
-         bool InsertValueBD(string FillTableSQL);
-         bool DeletedTableFromBD(string nameTable);
+         int CreateCellsOffice(string Name, float discount, bool dependence, string description, int IDparent);
+         bool ClearCellsOffice(string nameTable);
+         bool disbandOffices(string nameTable);
          List<SalesOffice> GetFieldFromBD(string querySelectSQL);
     }
 }
