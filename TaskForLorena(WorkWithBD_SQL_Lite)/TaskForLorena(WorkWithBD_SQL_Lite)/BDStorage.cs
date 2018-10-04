@@ -8,44 +8,40 @@ using System.Windows;
 
 namespace TaskforLorena_work_with_DBSQLite_
 {
-    class BDStorage : IBDStorage
+    public class BDStorage : IBDStorage
     {
-        int count;
-        SQLiteCommand command;
-        private readonly SQLiteConnection dbConnection;        //поле для хранения экземпляра dbConnection ,уже соединеного с нашей БД
+        private SQLiteCommand command;
+        readonly private SQLiteConnection dbConnection;
 
-        public BDStorage(string connectionPath)
+        public BDStorage (string connectionString)
         {
-            dbConnection = CreateDBConnection(connectionPath); //создаем экзепляр класса QueryStorage  и передаем конструктору dbConnection             
-        }
-
-        public List<string> GetShops()
-        {
-            List<string> shopList = new List<string>();
-            string SQL = "SELECT NAME FROM TestTask;";
-            command = new SQLiteCommand(SQL, dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            if (!(File.Exists(connectionString)))    // если файл не найден сообщаем об ошибке 
             {
-                shopList.Add((reader["name"]).ToString());
-            }
-            return shopList;
-        }
-
-        public SQLiteConnection CreateDBConnection(string connectionPath)       // метод для соединения к БД
-        {
-            if (!(File.Exists(connectionPath)))                               // если файл не найден сообщаем об ошибке 
-            {
-                MessageBox.Show("File not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;  // there is no db-file
+                MessageBox.Show("File not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);                
             }
             SQLiteConnection dbConnection = new SQLiteConnection("Data Source=" + connectionPath);
             dbConnection.Open();
-            return dbConnection;
         }
 
-        public bool IsExistTableStatus(string NameTable)
+        public List<IDepartment> GetMainDepartments()
         {
+            // Go to DB and getting main departments
+            int id;
+            string querySQL = "select ID,Parent_id, Discount,Relation FROM TestTask WHERE parent_id = 0";
+            command = new SQLiteCommand(SQL, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            var deps = new List<IDepartment>();
+            while (reader.Read())
+            {
+                relatioSalesOfficen = false;
+                id = Int32.Parse(reader["id"].ToString());
+                deps.Add(new DBDepartment(dbConnection, id));
+            }
+            return deps;
+        }
+        public bool DBTableExist(string NameTable)
+        {
+            //Go to BD and Check IsTable there
             int count = 0;
             string SQL = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = \"" + NameTable + "\"";
             command = new SQLiteCommand(SQL, dbConnection);
@@ -59,14 +55,15 @@ namespace TaskforLorena_work_with_DBSQLite_
             return false;
         }
 
-        public void LoadTabletoBD(string SQLCreateTableScript)
+         public CreateTabletoBD (string ScriptAddTable)
         {
-            command = new SQLiteCommand(SQLCreateTableScript, dbConnection);
+            command = new SQLiteCommand(ScriptAddTable, dbConnection);
             command.ExecuteNonQuery();
         }
 
         public int CreateCellsOffice(string Name, float discount, bool Relation, string description, int IdParent)
         {
+            // Create in BD table  string 
             int currentID = 0;
             int relations = 0;
             string comma = ", ";
@@ -85,83 +82,13 @@ namespace TaskforLorena_work_with_DBSQLite_
                 currentID = Int32.Parse((reader["max(id)"]).ToString());
             return currentID;
         }
-
-        public bool ClearCellsOffice(string nameTable)
-        {
-            count = 0;
-            string clearTable = "DELETE FROM " + nameTable;
-            command = new SQLiteCommand(clearTable, dbConnection);
-            if (count > 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public List<IDepartment> GetSalesOffice()
-        {
-            int id;
-            int childID;
-            float discount;
-            int parent_id;
-            float childDiscountl;
-            bool relatioSalesOfficen = false;
-            bool childRelationSales = false;
-            string querySQL = "select ID,Parent_id, Discount,Relation FROM TestTask";
-
-            List<IDepartment> depsWithoutParent = new List<IDepartment>();    //будем хранить все департаменты для которых нет родителей
-            List<IDepartment> deps = new List<IDepartment>();                //здесь будем хранить все департаменты
-            List<int> depsParentIds = new List<int>();                   // хранятся индетификаторы родителей
-            command = new SQLiteCommand(querySQL, dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            int N = 10; // создаем 10 департментов
-
-            while (reader.Read())
-            {
-                relatioSalesOfficen = false;
-                parent_id = Int32.Parse(reader["ID"].ToString());
-                id = Int32.Parse(reader["ID"].ToString());
-                discount = float.Parse(reader["Discount"].ToString());
-                if (int.Parse(reader["Relation"].ToString()) == 1)
-                {
-                    relatioSalesOfficen = true;
-                }
-                var dep = new Department(id, parent_id, discount, relatioSalesOfficen);    // создаем департамент по ID
-                if (parent_id == 0)                                                //если нет родителя
-                {
-                    depsWithoutParent.Add(dep);               //добавляем в лист без родителей;
-                }
-                deps.Add(dep);
-                depsParentIds.Add(parent_id);
-            }
-
-            for (int i = 0; i < deps.Count; ++i)     // создаем родственные связи
-            {
-                var dep = deps[i];                 //берем департамент
-                var parentID = depsParentIds[i];   //берем ID его родителя
-
-                foreach(var parDep in deps)        //ищем департамент с таким id в списке deps
-                {
-                    if (parDep.ID == parentID)
-                    {
-                        parDep.AddChild(dep);             // родитель найден, добавляем ему ребенка
-                            break;                          
-                    }
-                }
-
-            }
-        }
-
-        public string createTableSQL =
-          "CREATE TABLE `TestTask` (" +
-           "`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-           " `Parent_id`	INTEGER NOT NULL," +
-          "`Name`	TEXT NOT NULL," +
-          "`Discount" +
-          "`	REAL NOT NULL," +
-          "	`Relation`	INTEGER NOT NULL," +
-          "	`Description`	TEXT(124)" +
-          ");";
     }
 }
+
+
+    
+
+       
+
+
+

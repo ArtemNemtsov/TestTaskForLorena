@@ -20,35 +20,39 @@ namespace TaskforLorena_work_with_DBSQLite_
     {
         readonly string connectDBPath = "..\\..\\";
         readonly string BDFileName = "TestBDForLorena.db";
-        string fullPathToBD;
         string cwd = System.IO.Directory.GetCurrentDirectory();
 
         public MainWindow()
         {
             InitializeComponent();
-            cwd += connectDBPath;
             fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
-            BDStorage BDStorage = new BDStorage(fullPathToBD);              // подключаемся к БД   
-            if (BDStorage.IsExistTableStatus("TestTable"))                // если таблицы нет, создаем ее
+            BDStorage storage = new BDStorage(fullPathToBD);
+            if (storage.DBTableExist("TestTable"))                // если таблицы нет, создаем ее
             {
-                BDStorage.LoadTabletoBD(BDStorage.createTableSQL);
+                storage.LoadTabletoBD(storage.createTableSQL);
+                int IdMiass = BDStorage.CreateCellsOffice("Миасс", 4, false, "", 0);        //заполняем таблицу в БД
+                int IdAmelia = BDStorage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
+                int IdTest1 = BDStorage.CreateCellsOffice("Тест1", 2, true, "", IdAmelia);
+                int IdKurgan = BDStorage.CreateCellsOffice("Курган", 2, false, "", 0);
+                int IdTest2 = BDStorage.CreateCellsOffice("Тест2", 0, true, "", IdKurgan);
             }
-
-            List<string> ShopsName = BDStorage.GetShops(); // показываем список магазинов
-            foreach (string shop in ShopsName)
+            var mainDeps = storage.GetMainDepartments();
+            foreach (IDepartment dep in mainDeps)
             {
-                Сhoice.Items.Add(shop);
+                printIDepartment(dep);
+                var childDeps = dep.GetChildDepartments();
+                Console.WriteLine("Children:");
+                foreach (var child in childDeps)
+                {
+                    Console.Write("   ");  // Просто отступ
+                    printIDepartment(child);
+
+                    double price = 57470.0;
+                    Console.WriteLine("   Price. Before discount: {0}. After discount: {1}", price, CalcDiscountedPrice(child, price));
+                }
             }
-
-            /*int IdMiass =  BDStorage.CreateCellsOffice("Миасс", 4,  false, "", 0);     //заполняем таблицу в БД
-              int IdAmelia = BDStorage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
-              int IdTest1 = BDStorage.CreateCellsOffice("Тест1", 2, true, "", IdAmelia);          
-              int IdKurgan =  BDStorage.CreateCellsOffice("Курган", 2, false, "", 0);
-              int IdTest2 = BDStorage.CreateCellsOffice("Тест2", 0, true, "", IdKurgan);
-              */
-
-
         }
+
 
         private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -71,3 +75,19 @@ namespace TaskforLorena_work_with_DBSQLite_
         }
     }
 }
+
+/*
+  cwd += connectDBPath;
+  fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
+  BDStorage BDStorage = new BDStorage(fullPathToBD);              // подключаемся к БД   
+  if (BDStorage.IsExistTableStatus("TestTable"))                // если таблицы нет, создаем ее
+  {
+      BDStorage.LoadTabletoBD(BDStorage.createTableSQL);
+  }
+
+  List<string> ShopsName = BDStorage.GetShops(); // показываем список магазинов
+  foreach (string shop in ShopsName)
+  {
+      Сhoice.Items.Add(shop);
+  }
+  */

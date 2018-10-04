@@ -7,11 +7,12 @@ namespace TaskforLorena_work_with_DBSQLite_
 {
     public interface IDepartment
     {
-        int parent_id { get; }
-        int ID { get; }
-        double Discount { get; set; }
-        bool DependsOnParent { get; set; }
-        void AddChild(IDepartment dep); 
-        List<IDepartment> ChildDepartments { get; set; }
+        List<IDepartment> GetChildDepartments();
+        IDepartment Parent { get; }      
+        int Id { get; }
+        String Name { get; }         // Имя департамента
+        Double Discount { get; }
+        Boolean IsDependent { get; }
+        String Description { get; }
     }
 }
