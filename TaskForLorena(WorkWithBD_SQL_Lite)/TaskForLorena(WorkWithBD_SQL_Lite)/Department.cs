@@ -8,15 +8,22 @@ namespace TaskforLorena_work_with_DBSQLite_
     public class Department : IDepartment
     {
         public int ID { get; }
-        public double Discount { get; set; }
-        public List<IDepartment> ChildDepartments { get; set; }
+        public int  parent_id { get; }
+        public double Discount { get; set; } 
         public bool DependsOnParent { get; set; }
-        
-        public Department(int ID, double Discount, List<IDepartment> ChildDepartments, bool DependsOnParent)
+        public List<IDepartment> ChildDepartments { get; set; }
+
+        public Department(int ID, int parent_id, double Discount, bool DependsOnParent)
         {
+            this.ID = ID;
+            this.parent_id = parent_id;
             this.Discount = Discount;
-            this.ChildDepartments = ChildDepartments;
             this.DependsOnParent = DependsOnParent;
+        }
+
+        public void AddChild(IDepartment dep)
+        {
+            ChildDepartments.Add(dep);
         }
     }
 }

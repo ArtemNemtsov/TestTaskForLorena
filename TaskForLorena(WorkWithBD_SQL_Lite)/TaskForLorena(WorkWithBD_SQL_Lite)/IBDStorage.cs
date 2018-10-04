@@ -12,6 +12,5 @@ namespace TaskforLorena_work_with_DBSQLite_
         int CreateCellsOffice(string Name, float discount, bool dependence, string description, int IDparent);
         bool ClearCellsOffice(string nameTable);
         bool IsExistTableStatus(string NameTable);
-        List<SalesOffice> GetFieldFromBD(string querySelectSQL);
     }
 }

@@ -16,11 +16,12 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             get { return Description; }
             set
-            {   
+            {
                 if (value.Length > 124)
                 {
                     Description = value.Substring(0, 124);
-                }                else Description = value;
+                }
+                else Description = value;
             }
         }
 

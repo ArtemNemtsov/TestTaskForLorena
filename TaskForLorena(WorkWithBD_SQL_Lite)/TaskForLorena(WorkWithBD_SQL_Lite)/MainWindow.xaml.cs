@@ -20,25 +20,25 @@ namespace TaskforLorena_work_with_DBSQLite_
     {
         readonly string connectDBPath = "..\\..\\";
         readonly string BDFileName = "TestBDForLorena.db";
-        string fullPathToBD ;    
+        string fullPathToBD;
         string cwd = System.IO.Directory.GetCurrentDirectory();
-             
+
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
             cwd += connectDBPath;
             fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
             BDStorage BDStorage = new BDStorage(fullPathToBD);              // подключаемся к БД   
             if (BDStorage.IsExistTableStatus("TestTable"))                // если таблицы нет, создаем ее
             {
-                BDStorage.LoadTabletoBD(BDStorage.createTableSQL);             
+                BDStorage.LoadTabletoBD(BDStorage.createTableSQL);
             }
 
-             List<string> ShopsName = BDStorage.GetShops(); // показываем список магазинов
-             foreach(string shop in ShopsName)
-             {
-                 Сhoice.Items.Add(shop);
-             }
+            List<string> ShopsName = BDStorage.GetShops(); // показываем список магазинов
+            foreach (string shop in ShopsName)
+            {
+                Сhoice.Items.Add(shop);
+            }
 
             /*int IdMiass =  BDStorage.CreateCellsOffice("Миасс", 4,  false, "", 0);     //заполняем таблицу в БД
               int IdAmelia = BDStorage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
