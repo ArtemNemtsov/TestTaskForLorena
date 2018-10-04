@@ -29,12 +29,12 @@ namespace TaskforLorena_work_with_DBSQLite_
             BDStorage storage = new BDStorage(fullPathToBD);
             if (storage.DBTableExist("TestTable"))                // если таблицы нет, создаем ее
             {
-                storage.LoadTabletoBD(storage.createTableSQL);
-                int IdMiass = BDStorage.CreateCellsOffice("Миасс", 4, false, "", 0);        //заполняем таблицу в БД
-                int IdAmelia = BDStorage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
-                int IdTest1 = BDStorage.CreateCellsOffice("Тест1", 2, true, "", IdAmelia);
-                int IdKurgan = BDStorage.CreateCellsOffice("Курган", 2, false, "", 0);
-                int IdTest2 = BDStorage.CreateCellsOffice("Тест2", 0, true, "", IdKurgan);
+                storage.LoadTabletoBD(storage.createTable);
+                int IdMiass = storage.CreateCellsOffice("Миасс", 4, false, "", 0);        //заполняем таблицу в БД
+                int IdAmelia = storage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
+                int IdTest1 = storage.CreateCellsOffice("Тест1", 2, true, "", IdAmelia);
+                int IdKurgan = storage.CreateCellsOffice("Курган", 2, false, "", 0);
+                int IdTest2 = storage.CreateCellsOffice("Тест2", 0, true, "", IdKurgan);
             }
             var mainDeps = storage.GetMainDepartments();
             foreach (IDepartment dep in mainDeps)
