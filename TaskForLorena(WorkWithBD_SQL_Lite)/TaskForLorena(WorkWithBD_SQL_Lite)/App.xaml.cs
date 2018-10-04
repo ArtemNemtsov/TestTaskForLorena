@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace TaskForLorena_WorkWithBD_SQL_Lite_
+namespace Lorena
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -6,81 +6,129 @@ using System.Data.SQLite;
 using System.IO;
 using System.Windows;
 
-namespace TaskforLorena_work_with_DBSQLite_
+namespace Lorena
 {
-    public class BDStorage : IBDStorage
+    public class DBStorage
     {
-        private SQLiteCommand command;
-        readonly private SQLiteConnection dbConnection;
+        private SQLiteConnection dbConnection = null;
 
-        public BDStorage (string connectionString)
+        public DBStorage(string connectionString)
         {
             if (!(File.Exists(connectionString)))    // если файл не найден сообщаем об ошибке 
             {
                 MessageBox.Show("File not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);                
             }
-            SQLiteConnection dbConnection = new SQLiteConnection("Data Source=" + connectionPath);
-            dbConnection.Open();
+            this.dbConnection = new SQLiteConnection("Data Source=" + connectionString);
+            this.dbConnection.Open();
         }
 
         public List<IDepartment> GetMainDepartments()
         {
             // Go to DB and getting main departments
-            int id;
-            string querySQL = "select ID,Parent_id, Discount,Relation FROM TestTask WHERE parent_id = 0";
-            command = new SQLiteCommand(SQL, dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            var deps = new List<IDepartment>();
-            while (reader.Read())
-            {
-                relatioSalesOfficen = false;
-                id = Int32.Parse(reader["id"].ToString());
-                deps.Add(new DBDepartment(dbConnection, id));
-            }
-            return deps;
+            var roodDep = new Department(dbConnection, 0); // немного читерства
+            return roodDep.GetChildDepartments();
         }
-        public bool DBTableExist(string NameTable)
+        
+
+        public bool DBTableExist(string tableName)
         {
             //Go to BD and Check IsTable there
             int count = 0;
-            string SQL = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = \"" + NameTable + "\"";
-            command = new SQLiteCommand(SQL, dbConnection);
+            string SQL = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name = \"" + tableName + "\"";
+            SQLiteCommand command = new SQLiteCommand(SQL, dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 count = int.Parse(reader["Count(*)"].ToString());
             }
-            if (count == 1)
-                return true;
+            return count == 1;
+        }
+
+        private void CreateDepartmentsTable()
+        {
+
+            string query  =
+                "CREATE TABLE `TestTask` (" +
+                 "`ID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                 " `Parent_id`	INTEGER NOT NULL," +
+                "`Name`	TEXT NOT NULL," +
+                "`Discount" +
+                "`	REAL NOT NULL," +
+                "	`Relation`	INTEGER NOT NULL," +
+                "	`Description`	TEXT(124)" +
+                ");";
+            SQLiteCommand command = new SQLiteCommand(query, dbConnection);
+            command.ExecuteNonQuery();
+        }
+
+        private void CreateResultsTable()
+        {
+            string query = "CREATE TABLE `Results` ( `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `department_id` INTEGER NOT NULL, `price` NUMERIC NOT NULL, `discount` NUMERIC NOT NULL DEFAULT 0, `parent_discount` NUMERIC NOT NULL DEFAULT 0, `discounted_price` NUMERIC NOT NULL );";
+            SQLiteCommand command = new SQLiteCommand(query, dbConnection);
+            command.ExecuteNonQuery();
+        }
+
+        public IDepartment CreateDepartment(string name, float discount, bool dependency, string description, IDepartment parent = null)
+        {
+            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            // Вставка в таблицу
+            int parentId = parent == null ? 0 : parent.Id;
+            string insertQuery = "INSERT into TestTask (parent_id, Name, Discount, Relation, Description)";
+            insertQuery += String.Format(" VALUES ({0}, \"{1}\", {2}, {3}, \"{4}\")", 
+                parentId, name, discount.ToString(culture), dependency ? 1 : 0, description);
+            SQLiteCommand command = new SQLiteCommand(insertQuery, dbConnection);
+            command.ExecuteNonQuery(); 
+
+            // получение добавленного id и формирования экземпляра департамента
+            // посмотреть  last_insert_rowid () 
+            string query = "select max(id) from TestTask;";
+            command = new SQLiteCommand(query, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            if (reader.Read()) {
+                int id = Int32.Parse((reader[0]).ToString());
+                return new Department(dbConnection, id, parent);
+            }
+            return null;
+        }
+
+        public bool TableIsEmpty(string tableName)
+        {
+            string query = String.Format("SELECT COUNT(*) FROM {0};", tableName);
+            SQLiteCommand command = new SQLiteCommand(query, dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                int cnt = Int32.Parse(reader[0].ToString());
+                return cnt == 0;
+            }
             return false;
         }
 
-         public CreateTabletoBD (string ScriptAddTable)
+        public void CreateRequiredTableIsNotExist()
         {
-            command = new SQLiteCommand(ScriptAddTable, dbConnection);
-            command.ExecuteNonQuery();
+            string tableName = "TestTask";
+            if (!DBTableExist(tableName))                            // если таблицы нет, создаем ее
+            {
+                CreateDepartmentsTable();
+            }
+
+            tableName = "Results";
+            if (!DBTableExist(tableName))                            // если таблицы нет, создаем ее
+            {
+                CreateResultsTable();
+            }
         }
 
-        public int CreateCellsOffice(string Name, float discount, bool Relation, string description, int IdParent)
+        public void LogResult(IDepartment dep, double price, double parentDiscount, double discountedPrice)
         {
-            // Create in BD table  string 
-            int currentID = 0;
-            int relations = 0;
-            string comma = ", ";
-            string qts = "\"";
-            if (Relation) relations = 1;
-            if (description == "") description = " emptyDescription";
-            string SQLGetMaxID = "select max(id) from TestTask;";
-            string SQLQuery = "insert into TestTask (parent_id, Name, Discount, Relation, Description)";
-            SQLQuery += " values (" + IdParent + comma + qts + Name + qts + comma + discount;
-            SQLQuery += comma + relations + comma + qts + description + qts + ")";
-            command = new SQLiteCommand(SQLQuery, dbConnection);
+            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            String query = 
+                String.Format("INSERT INTO Results(department_id, price, discount, parent_discount, discounted_price)" +
+                " VALUES ({0}, {1}, {2}, {3}, {4});",
+                dep.Id, price.ToString(culture), 
+                dep.Discount.ToString(culture), parentDiscount.ToString(culture), discountedPrice.ToString(culture));
+            SQLiteCommand command = new SQLiteCommand(query, dbConnection);
             command.ExecuteNonQuery();
-            command = new SQLiteCommand(SQLGetMaxID, dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-                currentID = Int32.Parse((reader["max(id)"]).ToString());
-            return currentID;
         }
     }
 }

@@ -14,77 +14,127 @@ using System.Windows.Shapes;
 using System.Data.SQLite;
 using System.IO;
 
-namespace TaskforLorena_work_with_DBSQLite_
+namespace Lorena
 {
     public partial class MainWindow : Window
     {
-        readonly string connectDBPath = "..\\..\\";
-        readonly string BDFileName = "TestBDForLorena.db";
-        string cwd = System.IO.Directory.GetCurrentDirectory();
+        private DBStorage storage;
 
         public MainWindow()
         {
             InitializeComponent();
-            fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
-            BDStorage storage = new BDStorage(fullPathToBD);
-            if (storage.DBTableExist("TestTable"))                // если таблицы нет, создаем ее
-            {
-                storage.LoadTabletoBD(storage.createTable);
-                int IdMiass = storage.CreateCellsOffice("Миасс", 4, false, "", 0);        //заполняем таблицу в БД
-                int IdAmelia = storage.CreateCellsOffice("Амелия", 5, true, "", IdMiass);
-                int IdTest1 = storage.CreateCellsOffice("Тест1", 2, true, "", IdAmelia);
-                int IdKurgan = storage.CreateCellsOffice("Курган", 2, false, "", 0);
-                int IdTest2 = storage.CreateCellsOffice("Тест2", 0, true, "", IdKurgan);
-            }
-            var mainDeps = storage.GetMainDepartments();
-            foreach (IDepartment dep in mainDeps)
-            {
-                printIDepartment(dep);
-                var childDeps = dep.GetChildDepartments();
-                Console.WriteLine("Children:");
-                foreach (var child in childDeps)
-                {
-                    Console.Write("   ");  // Просто отступ
-                    printIDepartment(child);
+            
+            
+        }
 
-                    double price = 57470.0;
-                    Console.WriteLine("   Price. Before discount: {0}. After discount: {1}", price, CalcDiscountedPrice(child, price));
+        private static List<IDepartment> flattenDepartments(List<IDepartment> deps)
+        {
+            List<IDepartment> result = new List<IDepartment>();
+            foreach (var dep in deps)
+            {
+                result.Add(dep);
+                var children = flattenDepartments(dep.GetChildDepartments());
+                foreach (var child in children)
+                {
+                    result.Add(child);
                 }
             }
+            return result;
         }
 
-
-        private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        static double CalcTotalDiscount(IDepartment dep)
         {
+            double discount = dep.Discount;
+            if (dep.IsDependent && dep.Parent != null && dep.Parent.Id > 0)
+            { 
+                discount += CalcTotalDiscount(dep.Parent);
+            }
+            return discount;
         }
 
-        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
+        double CalcDiscountedPrice(IDepartment dep, double price, bool logToDataBase = false)
         {
+            double totalDiscount = CalcTotalDiscount(dep);
+            double discountedPrice = price - price * (totalDiscount / 100.0);
 
+            if (logToDataBase)
+            {
+                double parentDiscount = totalDiscount - dep.Discount;
+                storage.LogResult(dep, price, parentDiscount, discountedPrice);
+            }
+            return discountedPrice;
         }
 
+   
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            textBlock1.Text = "qweerty";
-
+            RecalcResult(true);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            string connectDBPath = "..\\..\\";
+            string BDFileName = "TestBDForLorena.db";
+            string cwd = System.IO.Directory.GetCurrentDirectory();
+            string fullPathToBD = "";
+            fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь   к БД
+            storage = new DBStorage(fullPathToBD);
+            
+            storage.CreateRequiredTableIsNotExist();
+           
+            if (storage.TableIsEmpty("TestTask"))  // Заполняем если в таблице нет записей
+            {
+                var IdMiass = storage.CreateDepartment("Миасс", 4, false, "");        //заполняем таблицу в БД
+                var IdAmelia = storage.CreateDepartment("Амелия", 5, true, "", IdMiass);
+                var IdTest1 = storage.CreateDepartment("Тест1", 2, true, "", IdAmelia);
+                var IdKurgan = storage.CreateDepartment("Курган", 2, false, "");
+                var IdTest2 = storage.CreateDepartment("Тест2", 0, true, "", IdKurgan);
+            }
 
+
+            var mainDeps = storage.GetMainDepartments();
+            var allDepartments = flattenDepartments(mainDeps);
+
+            cbDepartment.ItemsSource = allDepartments;
+            cbDepartment.DisplayMemberPath = "Name";
+            cbDepartment.SelectedIndex = 0;
+        }
+
+        private void RecalcResult(bool logToDatabase = false)
+        {
+            IDepartment selectedDepartment = (IDepartment)cbDepartment.SelectedItem;
+            
+            double price;
+            if (Double.TryParse(textBox1.Text, out price) && selectedDepartment != null)
+            {
+                double discountedPrice = CalcDiscountedPrice(selectedDepartment, price, logToDatabase);
+                tbDiscountedPrice.Text = discountedPrice.ToString();
+
+                if (logToDatabase)
+                {
+                    MessageBox.Show("Данные записаны", "Результат", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+            }
+            else if (logToDatabase)
+            {
+                MessageBox.Show("Невозможно записать данные в БД. Введите цену.", "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RecalcResult();
+        }
+
+        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RecalcResult();
         }
     }
 }
 
 /*
-  cwd += connectDBPath;
-  fullPathToBD = System.IO.Path.Combine(connectDBPath, BDFileName);  //комбинируем полный путь БД
-  BDStorage BDStorage = new BDStorage(fullPathToBD);              // подключаемся к БД   
-  if (BDStorage.IsExistTableStatus("TestTable"))                // если таблицы нет, создаем ее
-  {
-      BDStorage.LoadTabletoBD(BDStorage.createTableSQL);
-  }
-
   List<string> ShopsName = BDStorage.GetShops(); // показываем список магазинов
   foreach (string shop in ShopsName)
   {

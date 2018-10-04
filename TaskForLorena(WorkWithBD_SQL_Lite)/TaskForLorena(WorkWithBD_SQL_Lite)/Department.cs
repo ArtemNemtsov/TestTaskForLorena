@@ -2,34 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data.SQLite;
 
-namespace TaskforLorena_work_with_DBSQLite_
+namespace Lorena
 {
     public class Department : IDepartment
     {
-        private SQLiteCommand command;
-        private readonly SQLiteConnection dbconnection;
-        public IDepartment Parent { get; }
-        public int Id { get; }
+        private readonly SQLiteConnection dbConnection;
 
-        public DBDepartment(SQLiteConnection connection, int id, IDepartment parent = null)
+        public int Id { get; private set; }
+        public IDepartment Parent { get; private set;  }
+        
+        public Department(SQLiteConnection connection, int id, IDepartment parent = null)
         {
-            Id = id;
-            this.connection = connection;
-            Parent = parent;
+            this.Id = id;
+            this.dbConnection = connection; 
+            this.Parent = parent;
+        }
+
+        private SQLiteDataReader ExecuteSelectQuery(String query)
+        {
+            SQLiteCommand command = new SQLiteCommand(query, dbConnection);
+            return command.ExecuteReader();
         }
 
         public List<IDepartment> GetChildDepartments()
         {
             var children = new List<IDepartment>();                 //  идем в бд и по индексу this.id нахоидм id всех детей          
-            int childId;                                            // всех детей складываем в список children 
-            string querySQL = "select id from TestTable where parent_id = " + Id;
-            command = new SQLiteCommand(SQL, dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
+                                                       // всех детей складываем в список children 
+            var reader = ExecuteSelectQuery("select id from TestTask where parent_id = " + Id);
             while (reader.Read())
             {
-                childId = int.Parse(reader["id"]);
-                IDepartment childDepartment = new DBDepartment(dbconnection, childId, this);   // this- говорим кто родитель
+                int childId = int.Parse(reader[0].ToString());
+                IDepartment childDepartment = new Department(dbConnection, childId, this);   // this- говорим кто родитель
                 children.Add(childDepartment);
             }
             return children;
@@ -39,15 +44,13 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             get   // используя id и connecton получаем из бд имя 
             {
-                string name;
-                string querySQL = "select Name FROM TestTask WHERE id = " + Id;
-                command = new SQLiteCommand(SQL, dbConnection);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                var reader = ExecuteSelectQuery("select Name FROM TestTask WHERE id = " + Id);
+                if (reader.Read())
                 {
-                    name = reader["Name"].ToString();
+                    return reader[0].ToString();
                 }
-                return name;
+
+                return "<NONAME>";
             }
         }
 
@@ -55,15 +58,12 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             get
             {
-                double discount;
-                string querySQL = "select Discount FROM TestTask WHERE id = " + Id;
-                command = new SQLiteCommand(SQL, dbConnection);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                var reader = ExecuteSelectQuery("select Discount FROM TestTask WHERE id = " + Id);
+                if (reader.Read())
                 {
-                    discount = double.Parse(reader["Discount"]);
+                    return double.Parse((reader[0]).ToString());
                 }
-                return discount;
+                return 0;
             }   
         }
 
@@ -71,15 +71,12 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             get
             {
-                bool isDependent = true;
-                string querySQL = "select Relation FROM TestTask WHERE id = " + Id;
-                command = new SQLiteCommand(SQL, dbConnection);
-                SQLiteDataReader reader = command.ExecuteReader();
+                var reader = ExecuteSelectQuery("select Relation FROM TestTask WHERE id = " + Id);
                 while (reader.Read())
                 {
-                    isDependent = bool.Parse(reader["Relation"].ToString());
+                    return int.Parse(reader[0].ToString()) == 1;
                 }
-                return isDependent;
+                return false;
             }
         }
 
@@ -87,15 +84,12 @@ namespace TaskforLorena_work_with_DBSQLite_
         {
             get
             {
-                string description;
-                string querySQL = "select Description FROM TestTask WHERE id = " + Id;
-                command = new SQLiteCommand(SQL, dbConnection);
-                SQLiteDataReader reader = command.ExecuteReader();
+                var reader = ExecuteSelectQuery("select Description FROM TestTask WHERE id = " + Id);
                 while (reader.Read())
                 {
-                    description = reader["Description"].ToString();
+                    return reader[0].ToString();
                 }
-                return description;
+                return "";
             }
         }
     }
