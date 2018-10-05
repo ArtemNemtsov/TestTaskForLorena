@@ -86,12 +86,12 @@ namespace Lorena
             {
                 var IdMiass = storage.CreateDepartment("Миасс", 4, false, "");        //заполняем таблицу в БД
                 var IdAmelia = storage.CreateDepartment("Амелия", 5, true, "", IdMiass);
-                var IdTest1 = storage.CreateDepartment("Тест1", 2, true, "", IdAmelia);
-                var IdKurgan = storage.CreateDepartment("Курган", 2, false, "");
-                var IdTest2 = storage.CreateDepartment("Тест2", 0, true, "", IdKurgan);
+                var IdTest1 = storage.CreateDepartment("Тест1", 2, true, "", IdAmelia);               
+                var IdTest2 = storage.CreateDepartment("Тест2", 0, true, "", IdMiass);
+                var IdKurgan = storage.CreateDepartment("Курган", 11, false, "");
             }
 
-
+            
             var mainDeps = storage.GetMainDepartments();
             var allDepartments = flattenDepartments(mainDeps);
 
