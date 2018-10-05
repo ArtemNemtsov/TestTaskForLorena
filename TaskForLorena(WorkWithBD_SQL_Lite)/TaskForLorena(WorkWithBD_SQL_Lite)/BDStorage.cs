@@ -25,8 +25,8 @@ namespace Lorena
         public List<IDepartment> GetMainDepartments()
         {
             // Go to DB and getting main departments
-            var roodDep = new Department(dbConnection, 0); // немного читерства
-            return roodDep.GetChildDepartments();
+            var roodDep = new Department(dbConnection, 0); // немного читерства.. создаем магазин фиктинвный с id 0
+            return roodDep.GetChildDepartments(); // получаем  для него реалььную дочку и возвращаем... 
         }
         
 
@@ -72,7 +72,7 @@ namespace Lorena
         {
             var culture = System.Globalization.CultureInfo.InvariantCulture;
             // Вставка в таблицу
-            int parentId = parent == null ? 0 : parent.Id;
+            int parentId = parent == null ? 0 : parent.Id;  // теральный оператор 
             string insertQuery = "INSERT into TestTask (parent_id, Name, Discount, Relation, Description)";
             insertQuery += String.Format(" VALUES ({0}, \"{1}\", {2}, {3}, \"{4}\")", 
                 parentId, name, discount.ToString(culture), dependency ? 1 : 0, description);

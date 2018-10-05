@@ -29,17 +29,17 @@ namespace Lorena
 
         private static List<IDepartment> flattenDepartments(List<IDepartment> deps)
         {
-            List<IDepartment> result = new List<IDepartment>();
-            foreach (var dep in deps)
+            List<IDepartment> result = new List<IDepartment>();        //создаем List
+            foreach (var dep in deps) // для каждого офисса из полученного списка оффисов делаем :
             {
-                result.Add(dep);
-                var children = flattenDepartments(dep.GetChildDepartments());
-                foreach (var child in children)
+                result.Add(dep);            // 1) каждый офиис добавляем в лист Result
+                var children = flattenDepartments(dep.GetChildDepartments());   // получаем дочку и ее тоже передаем в аргументы flattenDepartments(дочка)
+                foreach (var child in children)  //3) для каждого дочернего оффиса : 
                 {
-                    result.Add(child);
+                    result.Add(child);     //Добавляем в лист Result дочку
                 }
             }
-            return result;
+            return result;    // возвращаем лист result
         }
 
         static double CalcTotalDiscount(IDepartment dep)
@@ -91,9 +91,9 @@ namespace Lorena
                 var IdKurgan = storage.CreateDepartment("Курган", 11, false, "");
             }
 
-            
-            var mainDeps = storage.GetMainDepartments();
-            var allDepartments = flattenDepartments(mainDeps);
+         
+            var mainDeps = storage.GetMainDepartments();    // получаем главные офиссы
+            var allDepartments = flattenDepartments(mainDeps);  // получаем все офисы в list<Departament>
 
             cbDepartment.ItemsSource = allDepartments;
             cbDepartment.DisplayMemberPath = "Name";
