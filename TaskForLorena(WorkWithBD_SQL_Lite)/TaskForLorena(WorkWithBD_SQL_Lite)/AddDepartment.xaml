@@ -6,8 +6,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lorena"
         mc:Ignorable="d"
-        Title="AddDepartment" Height="450" Width="800">
-    <Grid>
-        
+        Title="AddDepartment" Height="511.244" Width="1029.659">
+    <Grid Background="#FFD1D1D1" Margin="0,0,0,-1.5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="655*"/>
+            <ColumnDefinition Width="368*"/>
+        </Grid.ColumnDefinitions>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="120" Margin="-10,104.481,0,0" Stroke="Black" VerticalAlignment="Top" Width="1032" Grid.ColumnSpan="2"/>
+        <ComboBox Name ="ComboBox_Parent"  HorizontalAlignment="Left" Height="42" Margin="111.801,136,0,0" VerticalAlignment="Top" Width="173.74" SelectionChanged="ComboBox_SelectionChanged" Grid.Column="1"/>
+        <Label Content="Имя" HorizontalAlignment="Left" Margin="59,37.481,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.247,0.643"/>
+        <Label Content="Скидка%" HorizontalAlignment="Left" Margin="179.984,37.481,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.616,0.495"/>
+        <Label Content="Зависимость" HorizontalAlignment="Left" Margin="334.845,37.481,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label Content="Описание" HorizontalAlignment="Left" Margin="564.809,37.481,0,0" VerticalAlignment="Top" FontSize="20" Grid.ColumnSpan="2"/>
+        <Label Content="Родителький магазин" HorizontalAlignment="Left" Margin="95.541,37.481,0,0" VerticalAlignment="Top" FontSize="20" Grid.Column="1"/>
+        <TextBox HorizontalAlignment="Left" Height="42" Margin="20.809,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124.191" FontSize="20" TextChanged="TBoxName_TextChanged"/>
+        <Rectangle Fill="#FF41414B" HorizontalAlignment="Left" Height="11.5" Margin="0,92.981,0,0" Stroke="Black" VerticalAlignment="Top" Width="1022" Grid.ColumnSpan="2"/>
+        <TextBox HorizontalAlignment="Left" Height="42" Margin="171.793,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108.191" FontSize="20"/>
+        <CheckBox Name="CheckBoxDepends" Content="Есть зависимость?" HorizontalAlignment="Left" Margin="310.845,145,0,0" VerticalAlignment="Top" Height="22" Width="160.964" FontSize="16" Checked="CheckBoxDepends_Checked" Unchecked="CheckBoxDepends_Unchecked"/>
+        <TextBox HorizontalAlignment="Left" Height="42" Margin="503.809,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="226.191" FontSize="20" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

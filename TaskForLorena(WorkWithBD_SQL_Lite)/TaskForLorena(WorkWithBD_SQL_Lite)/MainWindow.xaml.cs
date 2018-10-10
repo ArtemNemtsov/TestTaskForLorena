@@ -12,6 +12,7 @@ namespace Lorena
     public partial class MainWindow : Window
     {
         private DBStorage storage;
+        List <IDepartment> allDepartments;
 
         public MainWindow()
         {
@@ -76,7 +77,7 @@ namespace Lorena
                 var IdKurgan = storage.CreateDepartment("Курган", 11, false, "");
             }
             var mainDeps = storage.GetMainDepartments();                             // получаем главные офиссы
-            var allDepartments = flattenDepartments(mainDeps);                       // получаем  в list<Departament> все офисы
+            allDepartments = flattenDepartments(mainDeps);                       // получаем  в list<Departament> все офисы
 
             AppendChildrenRecursively(treebase, mainDeps);                          
         }
@@ -95,7 +96,7 @@ namespace Lorena
 
         private void RecalcResult(bool logtodatabase = false)                              //вычисляем результат, по умолчанию logToDatabase = false (записи в БД не делаем)
         {
-            ItemsControl item = (TreeViewItem)treebase.SelectedItem;                       // Свойство SelectedItem реализованное для TreeViewItem возвращает тип Object.
+            TreeViewItem item = (TreeViewItem)treebase.SelectedItem;   // Свойство SelectedItem реализованное для TreeViewItem возвращает тип Object.
 
             IDepartment selecteddepartment = (IDepartment)item.Tag;
 
@@ -139,7 +140,7 @@ namespace Lorena
 
         private void AddDepartment_Click(object sender, RoutedEventArgs e)
         {
-            AddDepartment depart = new AddDepartment();
+            AddDepartment depart = new AddDepartment(allDepartments);
             depart.ShowDialog();
         }
     }
