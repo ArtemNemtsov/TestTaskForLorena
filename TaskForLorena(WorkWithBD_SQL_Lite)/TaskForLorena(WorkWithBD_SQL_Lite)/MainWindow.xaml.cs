@@ -140,7 +140,7 @@ namespace Lorena
 
         private void AddDepartment_Click(object sender, RoutedEventArgs e)
         {
-            AddDepartment depart = new AddDepartment(allDepartments);
+            AddDepartment depart = new AddDepartment(allDepartments, storage);
             depart.ShowDialog();
         }
     }

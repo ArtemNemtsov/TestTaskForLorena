@@ -19,15 +19,37 @@ namespace Lorena
         float discount = 0;
         bool depend = false;
         string description = "";
-        IDepartment parent;
-      
+        IDepartment parent = null;
+        DBStorage storage;
+
+
         List<IDepartment> allDeps;
 
-        public AddDepartment(List<IDepartment> allDeps)
+        public AddDepartment(List<IDepartment> allDeps, DBStorage storage)
         {
-            this.allDeps = allDeps;
             InitializeComponent();
+            this.allDeps = allDeps;
+            this.storage = storage;     
             CheckBoxDepends.IsChecked  =  false;
+        }
+
+        IDepartment GetParentFromList (List<IDepartment> deps)
+        {
+            foreach (var dep in deps)
+            {
+                if (ComboBox_Parent.SelectedValue == dep)
+                {
+                    return dep;
+                }
+            }
+            return null;
+        }
+
+        bool CheckFildIsEmpty()
+        {
+            if (name == null)
+                return false;
+            return true;
         }
 
         private void TBoxName_TextChanged(object sender, TextChangedEventArgs e)
@@ -42,12 +64,14 @@ namespace Lorena
 
         private void CheckBoxDepends_Checked(object sender, RoutedEventArgs e)
         {
-                ComboBox_Parent.ItemsSource = allDeps;
-                ComboBox_Parent.DisplayMemberPath = "Name";
+            depend = true;
+            ComboBox_Parent.ItemsSource = allDeps;
+            ComboBox_Parent.DisplayMemberPath = "Name";
         }
 
         private void CheckBoxDepends_Unchecked(object sender, RoutedEventArgs e)
         {
+            depend = false;
             ComboBox_Parent.ItemsSource = null;
         }
 
@@ -58,7 +82,7 @@ namespace Lorena
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+           parent = GetParentFromList(allDeps);
         }
 
         private void AddDepartm_back_Click(object sender, RoutedEventArgs e)
@@ -68,6 +92,12 @@ namespace Lorena
 
         private void CreateShop_Click(object sender, RoutedEventArgs e)
         {
+            if (!CheckFildIsEmpty())
+            {
+               storage.CreateDepartment(name, discount, depend, description, parent);
+               MessageBox.Show("Магазин успешно создан !", name, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else MessageBox.Show("Заполните обязательные поля", " Внимание !", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
         }
     }

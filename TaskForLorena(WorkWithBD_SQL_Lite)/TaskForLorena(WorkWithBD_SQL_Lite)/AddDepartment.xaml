@@ -12,7 +12,7 @@
             <ColumnDefinition Width="655*"/>
             <ColumnDefinition Width="368*"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="120" Margin="-10,104.481,0,0" Stroke="Black" VerticalAlignment="Top" Width="1032" Grid.ColumnSpan="2"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="158.343" Margin="-10,104.481,0,0" Stroke="Black" VerticalAlignment="Top" Width="1032" Grid.ColumnSpan="2"/>
         <ComboBox Name ="ComboBox_Parent"  HorizontalAlignment="Left" Height="42" Margin="111.801,136,0,0" VerticalAlignment="Top" Width="173.74" SelectionChanged="ComboBox_SelectionChanged" Grid.Column="1"/>
         <Label Content="Имя" HorizontalAlignment="Left" Margin="59,37.481,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.247,0.643"/>
         <Label Content="Скидка%" HorizontalAlignment="Left" Margin="179.984,37.481,0,0" VerticalAlignment="Top" FontSize="20" RenderTransformOrigin="0.616,0.495"/>
@@ -24,5 +24,8 @@
         <TextBox Name="TBoxDiscount" HorizontalAlignment="Left" Height="42" Margin="171.793,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108.191" FontSize="20" TextChanged="TBoxDiscount_TextChanged"/>
         <CheckBox Name="CheckBoxDepends" Content="Есть зависимость?" HorizontalAlignment="Left" Margin="310.845,145,0,0" VerticalAlignment="Top" Height="22" Width="160.964" FontSize="16" Checked="CheckBoxDepends_Checked" Unchecked="CheckBoxDepends_Unchecked"/>
         <TextBox Name="TBoxDecription" HorizontalAlignment="Left" Height="42" Margin="508.309,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="226.191" FontSize="20" Grid.ColumnSpan="2" TextChanged="TBoxDecription_TextChanged"/>
+        <Button Name="AddDepartm_back" Content="Назад" HorizontalAlignment="Left" Margin="288.421,391.826,0,0" VerticalAlignment="Top" Width="103.757" Height="35.976" Click="AddDepartm_back_Click"/>
+        <Button Name="CreateShop" Content="Создать" HorizontalAlignment="Left" Height="35.976" Margin="534.177,391.826,0,0" VerticalAlignment="Top" Width="119.823" Click="CreateShop_Click"/>
+        <Slider HorizontalAlignment="Left" Margin="178.516,201.688,0,0" VerticalAlignment="Top" Height="30.781" Width="101.468"/>
     </Grid>
 </Window>
