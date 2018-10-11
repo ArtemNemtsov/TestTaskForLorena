@@ -77,7 +77,7 @@ namespace Lorena
                 var IdKurgan = storage.CreateDepartment("Курган", 11, false, "");
             }
             var mainDeps = storage.GetMainDepartments();                             // получаем главные офиссы
-            allDepartments = flattenDepartments(mainDeps);                       // получаем  в list<Departament> все офисы
+            allDepartments = flattenDepartments(mainDeps);                           // получаем  в list<Departament> все офисы
 
             AppendChildrenRecursively(treebase, mainDeps);                          
         }

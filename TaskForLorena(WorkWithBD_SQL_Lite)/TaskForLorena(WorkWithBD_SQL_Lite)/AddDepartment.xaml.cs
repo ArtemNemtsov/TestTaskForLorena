@@ -19,6 +19,7 @@ namespace Lorena
         float discount = 0;
         bool depend = false;
         string description = "";
+        IDepartment parent;
       
         List<IDepartment> allDeps;
 
@@ -31,7 +32,12 @@ namespace Lorena
 
         private void TBoxName_TextChanged(object sender, TextChangedEventArgs e)
         {
+            name = TBoxName.Text;
+        }
 
+        private void TBoxDiscount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            discount = float.Parse(TBoxDiscount.Text);
         }
 
         private void CheckBoxDepends_Checked(object sender, RoutedEventArgs e)
@@ -40,13 +46,29 @@ namespace Lorena
                 ComboBox_Parent.DisplayMemberPath = "Name";
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-
         private void CheckBoxDepends_Unchecked(object sender, RoutedEventArgs e)
         {
             ComboBox_Parent.ItemsSource = null;
+        }
+
+        private void TBoxDecription_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            description = TBoxDecription.Text;
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void AddDepartm_back_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void CreateShop_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
