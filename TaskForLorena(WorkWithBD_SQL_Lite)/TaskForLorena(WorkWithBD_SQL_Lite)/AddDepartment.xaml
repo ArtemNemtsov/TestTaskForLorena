@@ -1,5 +1,5 @@
 ﻿<Window x:Class="Lorena.AddDepartment"
-        WindowStartupLocation ="CenterScreen"
+        WindowStartupLocation ="CenterScreen"     
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -21,11 +21,11 @@
         <Label Content="Родителький магазин" HorizontalAlignment="Left" Margin="95.541,37.481,0,0" VerticalAlignment="Top" FontSize="20" Grid.Column="1"/>
         <TextBox Name="TBoxName" HorizontalAlignment="Left" Height="42" Margin="20.809,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124.191" FontSize="20" TextChanged="TBoxName_TextChanged"/>
         <Rectangle Fill="#FF41414B" HorizontalAlignment="Left" Height="11.5" Margin="0,92.981,0,0" Stroke="Black" VerticalAlignment="Top" Width="1022" Grid.ColumnSpan="2"/>
-        <TextBox Name="TBoxDiscount" HorizontalAlignment="Left" Height="42" Margin="171.793,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108.191" FontSize="20" TextChanged="TBoxDiscount_TextChanged"/>
+        <TextBox Name="TBoxDiscount" OpacityMask="DarkBlue" HorizontalAlignment="Left" Height="42" Margin="171.793,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120.191" FontSize="20" TextChanged="TBoxDiscount_TextChanged" PreviewKeyUp="TBoxDiscount_PreviewKeyUp"/>
         <CheckBox Name="CheckBoxDepends" Content="Есть зависимость?" HorizontalAlignment="Left" Margin="310.845,145,0,0" VerticalAlignment="Top" Height="22" Width="160.964" FontSize="16" Checked="CheckBoxDepends_Checked" Unchecked="CheckBoxDepends_Unchecked"/>
         <TextBox Name="TBoxDecription" HorizontalAlignment="Left" Height="42" Margin="508.309,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="226.191" FontSize="20" Grid.ColumnSpan="2" TextChanged="TBoxDecription_TextChanged"/>
         <Button Name="AddDepartm_back" Content="Назад" HorizontalAlignment="Left" Margin="288.421,391.826,0,0" VerticalAlignment="Top" Width="103.757" Height="35.976" Click="AddDepartm_back_Click"/>
         <Button Name="CreateShop" Content="Создать" HorizontalAlignment="Left" Height="35.976" Margin="534.177,391.826,0,0" VerticalAlignment="Top" Width="119.823" Click="CreateShop_Click"/>
-        <Slider HorizontalAlignment="Left" Margin="178.516,201.688,0,0" VerticalAlignment="Top" Height="30.781" Width="101.468"/>
+        <Slider Name="sliderDiscount" HorizontalAlignment="Left" Margin="178.516,201.688,0,0" VerticalAlignment="Top" Height="30.781" Width="101.468" ValueChanged="sliderDiscount_ValueChanged"/>
     </Grid>
 </Window>

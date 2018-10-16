@@ -22,7 +22,6 @@ namespace Lorena
         IDepartment parent = null;
         DBStorage storage;
 
-
         List<IDepartment> allDeps;
 
         public AddDepartment(List<IDepartment> allDeps, DBStorage storage)
@@ -31,6 +30,10 @@ namespace Lorena
             this.allDeps = allDeps;
             this.storage = storage;     
             CheckBoxDepends.IsChecked  =  false;
+            TBoxDiscount.MaxLines = 1;
+            TBoxDiscount.MaxLength = 6;
+            sliderDiscount.Minimum = 0.0;
+            sliderDiscount.Maximum = 100.0;
         }
 
         IDepartment GetParentFromList (List<IDepartment> deps)
@@ -59,7 +62,20 @@ namespace Lorena
 
         private void TBoxDiscount_TextChanged(object sender, TextChangedEventArgs e)
         {
+          
+            // TBoxDiscount.Text = (Double.Parse(TBoxDiscount.Text)).ToString("000.00");
             discount = float.Parse(TBoxDiscount.Text);
+        }
+
+        private void sliderDiscount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            string maxLenghDiscount = "";
+            maxLenghDiscount = sliderDiscount.Value.ToString();
+            if (maxLenghDiscount.Length > 5)
+            {
+                maxLenghDiscount = maxLenghDiscount.Remove(5);
+            }
+            TBoxDiscount.Text = maxLenghDiscount;
         }
 
         private void CheckBoxDepends_Checked(object sender, RoutedEventArgs e)
@@ -99,6 +115,17 @@ namespace Lorena
             }
             else MessageBox.Show("Заполните обязательные поля", " Внимание !", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
+        }
+
+        private void TBoxDiscount_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (!(Char.IsDigit(e.KeyChar)))
+            {
+                if (e.KeyChar != (char)Keys.Back)
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
