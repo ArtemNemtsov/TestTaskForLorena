@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,22 +22,22 @@ namespace Lorena
         string description = "";
         IDepartment parent = null;
         DBStorage storage;
-
+        private static readonly Regex _regex = new Regex("[^0-9.-]+");
         List<IDepartment> allDeps;
 
         public AddDepartment(List<IDepartment> allDeps, DBStorage storage)
         {
             InitializeComponent();
             this.allDeps = allDeps;
-            this.storage = storage;     
-            CheckBoxDepends.IsChecked  =  false;
+            this.storage = storage;
+            CheckBoxDepends.IsChecked = false;
             TBoxDiscount.MaxLines = 1;
             TBoxDiscount.MaxLength = 6;
             sliderDiscount.Minimum = 0.0;
             sliderDiscount.Maximum = 100.0;
         }
 
-        IDepartment GetParentFromList (List<IDepartment> deps)
+        IDepartment GetParentFromList(List<IDepartment> deps)
         {
             foreach (var dep in deps)
             {
@@ -58,13 +59,6 @@ namespace Lorena
         private void TBoxName_TextChanged(object sender, TextChangedEventArgs e)
         {
             name = TBoxName.Text;
-        }
-
-        private void TBoxDiscount_TextChanged(object sender, TextChangedEventArgs e)
-        {
-          
-            // TBoxDiscount.Text = (Double.Parse(TBoxDiscount.Text)).ToString("000.00");
-            discount = float.Parse(TBoxDiscount.Text);
         }
 
         private void sliderDiscount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -98,7 +92,7 @@ namespace Lorena
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           parent = GetParentFromList(allDeps);
+            parent = GetParentFromList(allDeps);
         }
 
         private void AddDepartm_back_Click(object sender, RoutedEventArgs e)
@@ -110,22 +104,41 @@ namespace Lorena
         {
             if (!CheckFildIsEmpty())
             {
-               storage.CreateDepartment(name, discount, depend, description, parent);
-               MessageBox.Show("Магазин успешно создан !", name, MessageBoxButton.OK, MessageBoxImage.Information);
+                storage.CreateDepartment(name, discount, depend, description, parent);
+                MessageBox.Show("Магазин успешно создан !", name, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else MessageBox.Show("Заполните обязательные поля", " Внимание !", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-
         }
 
-        private void TBoxDiscount_PreviewKeyUp(object sender, KeyEventArgs e)
+        private static bool IsTextAllowed(string text)
         {
-            if (!(Char.IsDigit(e.KeyChar)))
+            return !_regex.IsMatch(text);
+        }
+
+        private void TBoxDiscount_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(!IsTextAllowed(e.Text))
             {
-                if (e.KeyChar != (char)Keys.Back)
-                {
-                    e.Handled = true;
-                }
+                e.Handled = true;  
+            }
+            else discount +=  float.Parse(e.Text);
+        }
+
+        private void TBox_Discount_Chang(object sender, TextChangedEventArgs e)
+        {
+            if ((float.Parse(TBoxDiscount.Text)) > 100.00)
+            {
+                TBoxDiscount.Text = 100.ToString();
+            }
+            if (TBoxDiscount.Text.Length > 5 )
+            {
+                TBoxDiscount.Text = TBoxDiscount.Text.Remove(5);
             }
         }
     }
 }
+
+
+
+    
+
