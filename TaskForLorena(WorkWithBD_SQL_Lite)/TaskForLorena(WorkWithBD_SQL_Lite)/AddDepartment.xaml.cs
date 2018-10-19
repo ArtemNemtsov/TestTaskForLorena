@@ -22,8 +22,9 @@ namespace Lorena
         string description = "";
         IDepartment parent = null;
         DBStorage storage;
-        private static readonly Regex _regex = new Regex("[^0-9.-]+");
+        private static readonly Regex _regex = new Regex("[^0-9.]");
         List<IDepartment> allDeps;
+        MainWindow mainWin = new MainWindow();  //создаем экземпляр класса MainWindow
 
         public AddDepartment(List<IDepartment> allDeps, DBStorage storage)
         {
@@ -37,7 +38,7 @@ namespace Lorena
             sliderDiscount.Maximum = 100.0;
         }
 
-        IDepartment GetParentFromList(List<IDepartment> deps)
+        IDepartment GetParentFromList(List<IDepartment> deps)   //метод возврщает родителя 
         {
             foreach (var dep in deps)
             {
@@ -49,14 +50,14 @@ namespace Lorena
             return null;
         }
 
-        bool CheckFildIsEmpty()
+        bool CheckFildIsEmpty()                            //метод проверяет , не пустое ли имя. т.к. оно обязательное поле 
         {
-            if (name == null)
-                return false;
-            return true;
+            if (name == "")
+                return true;
+            return false;
         }
 
-        private void TBoxName_TextChanged(object sender, TextChangedEventArgs e)
+        private void TBoxName_TextChanged(object sender, TextChangedEventArgs e)    
         {
             name = TBoxName.Text;
         }
@@ -65,7 +66,7 @@ namespace Lorena
         {
             string maxLenghDiscount = "";
             maxLenghDiscount = sliderDiscount.Value.ToString();
-            if (maxLenghDiscount.Length > 5)
+            if (maxLenghDiscount.Length > 5)                  //ограничиваем длину поля Discount не больше 5 
             {
                 maxLenghDiscount = maxLenghDiscount.Remove(5);
             }
@@ -97,43 +98,52 @@ namespace Lorena
 
         private void AddDepartm_back_Click(object sender, RoutedEventArgs e)
         {
+            mainWin.ShowDialog();
             this.Close();
         }
 
-        private void CreateShop_Click(object sender, RoutedEventArgs e)
+        private void CreateShop_Click(object sender, RoutedEventArgs e)          //при нажатие клавиши создать магазин 
         {
-            if (!CheckFildIsEmpty())
+            if (!CheckFildIsEmpty())                                         //если поле Имя не пустое, то записываем в БД 
             {
                 storage.CreateDepartment(name, discount, depend, description, parent);
-                MessageBox.Show("Магазин успешно создан !", name, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Магазин успешно создан !", name, MessageBoxButton.OK, MessageBoxImage.Information);                
+                this.Close();
+                mainWin.ShowDialog();
             }
             else MessageBox.Show("Заполните обязательные поля", " Внимание !", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
-        private static bool IsTextAllowed(string text)
+        private static bool IsTextAllowed(string text)           //метод проверяет, совпадения в  regex и строки из аргумента
         {
             return !_regex.IsMatch(text);
         }
 
         private void TBoxDiscount_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if(!IsTextAllowed(e.Text))
+            if (!IsTextAllowed(e.Text))
             {
-                e.Handled = true;  
+                e.Handled = true;
             }
-            else discount +=  float.Parse(e.Text);
+            else if (e.Text == ".") discount += 0.0F;
+            else discount += float.Parse(e.Text);
         }
 
-        private void TBox_Discount_Chang(object sender, TextChangedEventArgs e)
+        private void TBox_Discount_Changed (object sender, TextChangedEventArgs e)
         {
-            if ((float.Parse(TBoxDiscount.Text)) > 100.00)
+            float discountTxbValue;
+            
+            if (float.TryParse(TBoxDiscount.Text, out discountTxbValue))
             {
-                TBoxDiscount.Text = 100.ToString();
-            }
-            if (TBoxDiscount.Text.Length > 5 )
-            {
-                TBoxDiscount.Text = TBoxDiscount.Text.Remove(5);
-            }
+                if (discountTxbValue > 100.00)                //ограничиваем ввод не больше 100 %
+                {
+                    TBoxDiscount.Text = "100";
+                }
+                if (TBoxDiscount.Text.Length > 5)           //ограничиваем числов до  5 символов  в длину 
+                {
+                    TBoxDiscount.Text = TBoxDiscount.Text.Remove(5);
+                }
+            }           
         }
     }
 }
