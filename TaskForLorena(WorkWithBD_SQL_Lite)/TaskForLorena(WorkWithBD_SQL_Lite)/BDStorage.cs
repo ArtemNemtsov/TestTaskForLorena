@@ -70,7 +70,7 @@ namespace Lorena
 
         public IDepartment CreateDepartment(string name, float discount, bool dependency, string description, IDepartment parent = null)
         {
-            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            var culture = System.Globalization.CultureInfo.InvariantCulture; //Свойство InvariantCulture получает экземпляр инвариантного языка и региональных параметров. Он связан с английским языком, но не связан ни с какой страной или регионом
             // Вставка в таблицу
             int parentId = parent == null ? 0 : parent.Id;
             string insertQuery = "INSERT into TestTask (parent_id, Name, Discount, Relation, Description)";
